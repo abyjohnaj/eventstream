@@ -1,0 +1,28 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Event {
+  id          String   @id @default(uuid())
+  eventCode   String   @unique
+  name        String
+  status      String   @default("DRAFT") // DRAFT, LIVE, ENDED
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  devices     Device[]
+}
+
+model Device {
+  id          String   @id @default(uuid())
+  eventId     String
+  role        String   // CAMERA, AUDIO, DIRECTOR, VIEWER
+  name        String   // e.g., "Stage Left Phone"
+  joinedAt    DateTime @default(now())
+  isActive    Boolean  @default(true)
+  event       Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+}
