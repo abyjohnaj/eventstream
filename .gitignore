@@ -3,18 +3,18 @@ node_modules/
 .npm
 
 # Build outputs
-apps/api/dist/
-apps/web/dist/
+backend/dist/
+frontend/dist/
 
 # Environment secrets (never commit real .env files)
 .env
 .env.local
-apps/api/.env
-apps/web/.env
+backend/.env
+frontend/.env
 
 # Prisma
-apps/api/prisma/*.db
-apps/api/prisma/*.db-journal
+backend/prisma/*.db
+backend/prisma/*.db-journal
 
 # Vercel
 .vercel

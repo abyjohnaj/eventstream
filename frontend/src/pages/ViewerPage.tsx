@@ -3,8 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ShieldAlert, Radio, Volume2, VolumeX, Maximize2, Minimize2, ArrowLeft } from 'lucide-react';
 import io from 'socket.io-client';
 import { Room, RoomEvent, Participant, Track, RemoteTrack, RemoteParticipant } from 'livekit-client';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+import { API_URL } from '../config/env.ts';
 
 export default function ViewerPage() {
   const { code } = useParams<{ code: string }>();
@@ -184,18 +183,18 @@ export default function ViewerPage() {
 
   return (
     <div className="flex-1 flex flex-col bg-bg-darkest p-6 md:p-12 items-center justify-center relative select-none">
-      
+
       <div className="max-w-4xl w-full space-y-6">
-        
+
         {/* Back Link & Info Row */}
         <div className="flex justify-between items-center w-full">
-          <button 
-            onClick={handleDisconnect} 
+          <button
+            onClick={handleDisconnect}
             className="inline-flex items-center gap-2 text-zinc-500 hover:text-zinc-300 text-sm font-semibold uppercase tracking-wider"
           >
             <ArrowLeft className="w-4 h-4" /> DISCONNECT VIEW
           </button>
-          
+
           <div className="flex items-center gap-2 bg-emerald-950/20 border border-emerald-500/20 px-3 py-1 rounded-full text-emerald-400">
             <Radio className="w-3.5 h-3.5 animate-pulse text-emerald-500" />
             <span className="text-[10px] font-black uppercase tracking-widest">LIVE BROADCAST</span>
@@ -203,7 +202,7 @@ export default function ViewerPage() {
         </div>
 
         {/* Video Player Display Container */}
-        <div 
+        <div
           ref={containerElementRef}
           className="relative aspect-video w-full bg-black rounded-2xl overflow-hidden border border-zinc-900 shadow-2xl flex items-center justify-center group"
         >
@@ -221,10 +220,10 @@ export default function ViewerPage() {
 
           {/* Player controls Overlay */}
           <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent flex justify-between items-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
-            
+
             {/* Audio Toggle */}
-            <button 
-              onClick={toggleMute} 
+            <button
+              onClick={toggleMute}
               className="text-white hover:text-zinc-300 p-2 bg-black/40 rounded-lg backdrop-blur-sm transition-all"
             >
               {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
@@ -234,8 +233,8 @@ export default function ViewerPage() {
             <span className="text-xs font-bold text-zinc-300 font-mono">ROOM: {code?.toUpperCase()}</span>
 
             {/* Screen Zoom Toggle */}
-            <button 
-              onClick={toggleFullscreen} 
+            <button
+              onClick={toggleFullscreen}
               className="text-white hover:text-zinc-300 p-2 bg-black/40 rounded-lg backdrop-blur-sm transition-all"
             >
               {isFullscreen ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}
