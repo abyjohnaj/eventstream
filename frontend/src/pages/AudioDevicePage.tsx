@@ -3,10 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Mic, MicOff, ShieldAlert, ArrowLeft, Radio, Sliders } from 'lucide-react';
 import io from 'socket.io-client';
 import { Room, createLocalAudioTrack, LocalAudioTrack } from 'livekit-client';
+import { API_URL } from '../config/env.ts';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
-
-export default function AudioDevice() {
+export default function AudioDevicePage() {
   const { code } = useParams<{ code: string }>();
   const navigate = useNavigate();
   const [room, setRoom] = useState<Room | null>(null);
@@ -22,6 +21,7 @@ export default function AudioDevice() {
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const animationFrameRef = useRef<number | null>(null);
+  
 
   // 1. Fetch connection token and join LiveKit room
   useEffect(() => {
@@ -213,6 +213,7 @@ export default function AudioDevice() {
               style={{ width: `${isMuted ? 0 : audioLevel}%` }}
               className="h-full bg-gradient-to-r from-emerald-500 via-yellow-500 to-red-500 transition-all duration-75"
             />
+
             {/* Grid markings */}
             <div className="absolute inset-0 flex justify-between px-4 pointer-events-none opacity-20 text-[9px] text-white font-mono leading-6">
               <span>-60dB</span>
@@ -223,6 +224,7 @@ export default function AudioDevice() {
           </div>
         </div>
       </div>
+
 
       {/* Control Actions Bottom Panel */}
       <div className="grid grid-cols-2 gap-4 max-w-md mx-auto w-full">

@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Radio, Users, Copy, Check, ShieldAlert, Monitor, Video, Mic, ExternalLink, ArrowLeft } from 'lucide-react';
 import io from 'socket.io-client';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+import { API_URL } from '../config/env.ts';
 
 interface Device {
   id: string;
@@ -21,7 +20,7 @@ interface EventData {
   devices: Device[];
 }
 
-export default function Dashboard() {
+export default function DashboardPage() {
   const { code } = useParams<{ code: string }>();
   const [eventData, setEventData] = useState<EventData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -47,7 +46,7 @@ export default function Dashboard() {
     };
 
     fetchEvent();
-    
+
     // Connect to Socket.io to listen for real-time telemetry/join messages
     const socket = io(API_URL);
     socket.emit('join-room', code.toUpperCase());
@@ -98,7 +97,7 @@ export default function Dashboard() {
   return (
     <div className="flex-1 bg-bg-darkest p-6 md:p-12 relative overflow-hidden">
       <div className="max-w-5xl mx-auto space-y-8 z-10 relative">
-        
+
         {/* Navigation & Status Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-zinc-900 pb-6">
           <div className="space-y-1">
@@ -130,7 +129,7 @@ export default function Dashboard() {
 
         {/* Info Grid */}
         <div className="grid md:grid-cols-3 gap-8">
-          
+
           {/* Main Info Block */}
           <div className="md:col-span-1 glass-panel p-6 space-y-6">
             <div>
@@ -147,12 +146,12 @@ export default function Dashboard() {
                 Crew Quick Connect
               </h3>
               <p className="text-xs text-zinc-500">Copy these URLs to quickly configure devices with pre-filled roles.</p>
-              
+
               {/* Camera joining link */}
               <div className="space-y-1">
                 <div className="flex justify-between items-center text-xs font-semibold">
                   <span className="text-zinc-400 flex items-center gap-1.5"><Video className="w-3.5 h-3.5 text-red-500" /> Camera URL</span>
-                  <button 
+                  <button
                     onClick={() => copyToClipboard(`${joinBaseUrl}?code=${eventData.eventCode}&role=CAMERA`, 'CAMERA')}
                     className="text-zinc-500 hover:text-zinc-300"
                   >
@@ -168,7 +167,7 @@ export default function Dashboard() {
               <div className="space-y-1">
                 <div className="flex justify-between items-center text-xs font-semibold">
                   <span className="text-zinc-400 flex items-center gap-1.5"><Mic className="w-3.5 h-3.5 text-amber-500" /> Audio URL</span>
-                  <button 
+                  <button
                     onClick={() => copyToClipboard(`${joinBaseUrl}?code=${eventData.eventCode}&role=AUDIO`, 'AUDIO')}
                     className="text-zinc-500 hover:text-zinc-300"
                   >
@@ -194,15 +193,14 @@ export default function Dashboard() {
                 {eventData.devices.map((device) => (
                   <div key={device.id} className="flex justify-between items-center bg-bg-darkest/80 border border-zinc-800 p-4 rounded-xl">
                     <div className="flex items-center gap-3">
-                      <div className={`p-2 rounded-lg ${
-                        device.role === 'CAMERA' ? 'bg-red-950/20 text-red-500' :
-                        device.role === 'AUDIO' ? 'bg-amber-950/20 text-amber-500' :
-                        device.role === 'DIRECTOR' ? 'bg-blue-950/20 text-blue-500' :
-                        'bg-zinc-900 text-zinc-400'
-                      }`}>
+                      <div className={`p-2 rounded-lg ${device.role === 'CAMERA' ? 'bg-red-950/20 text-red-500' :
+                          device.role === 'AUDIO' ? 'bg-amber-950/20 text-amber-500' :
+                            device.role === 'DIRECTOR' ? 'bg-blue-950/20 text-blue-500' :
+                              'bg-zinc-900 text-zinc-400'
+                        }`}>
                         {device.role === 'CAMERA' ? <Video className="w-5 h-5" /> :
-                         device.role === 'AUDIO' ? <Mic className="w-5 h-5" /> :
-                         <Monitor className="w-5 h-5" />}
+                          device.role === 'AUDIO' ? <Mic className="w-5 h-5" /> :
+                            <Monitor className="w-5 h-5" />}
                       </div>
                       <div>
                         <div className="font-semibold text-white text-sm">{device.name}</div>

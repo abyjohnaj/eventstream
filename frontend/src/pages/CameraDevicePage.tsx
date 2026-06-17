@@ -3,10 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Video, RefreshCw, Battery, Wifi, ShieldAlert, ArrowLeft, Heart, Radio } from 'lucide-react';
 import io from 'socket.io-client';
 import { Room, RoomEvent, createLocalVideoTrack, LocalVideoTrack } from 'livekit-client';
+import { API_URL } from '../config/env.ts';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
-
-export default function CameraDevice() {
+export default function CameraDevicePage() {
   const { code } = useParams<{ code: string }>();
   const navigate = useNavigate();
   const [room, setRoom] = useState<Room | null>(null);
@@ -15,8 +14,6 @@ export default function CameraDevice() {
   const [isConnected, setIsConnected] = useState(false);
   const [tallyStatus, setTallyStatus] = useState<'LIVE' | 'PREVIEW' | 'SAFE'>('SAFE');
   const [error, setError] = useState('');
-
-  // Mobile Telemetry Stats
   const [batteryLevel, setBatteryLevel] = useState<number>(100);
   const [signalStrength, setSignalStrength] = useState<number>(100); // percentage
   const [fps, setFps] = useState<number>(30);
@@ -201,15 +198,14 @@ export default function CameraDevice() {
 
   return (
     <div className="flex-1 bg-black flex flex-col justify-between relative overflow-hidden select-none">
-      
+
       {/* Tall Light Indicators (Top Panel) */}
       <div className="absolute top-0 inset-x-0 p-4 z-30 flex justify-between items-center bg-gradient-to-b from-black/80 to-transparent">
         <div className="flex items-center gap-3">
-          <div className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider flex items-center gap-2 ${
-            tallyStatus === 'LIVE' ? 'bg-red-600 animate-pulse text-white' :
+          <div className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider flex items-center gap-2 ${tallyStatus === 'LIVE' ? 'bg-red-600 animate-pulse text-white' :
             tallyStatus === 'PREVIEW' ? 'bg-blue-600 text-white' :
-            'bg-zinc-800 text-zinc-400'
-          }`}>
+              'bg-zinc-800 text-zinc-400'
+            }`}>
             <span className={`w-2 h-2 rounded-full ${tallyStatus === 'LIVE' ? 'bg-white' : tallyStatus === 'PREVIEW' ? 'bg-white' : 'bg-zinc-500'}`} />
             {tallyStatus}
           </div>

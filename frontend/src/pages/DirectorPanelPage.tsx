@@ -3,8 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Video, Mic, Sliders, ShieldAlert, Radio, Battery, Wifi, Disc, Square, Monitor } from 'lucide-react';
 import io from 'socket.io-client';
 import { Room, RoomEvent, Participant, Track, RemoteTrack, TrackPublication, RemoteParticipant } from 'livekit-client';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+import { API_URL } from '../config/env.ts';
 
 interface Telemetry {
   deviceId: string;
@@ -17,7 +16,7 @@ interface Telemetry {
   isMuted?: boolean;
 }
 
-export default function DirectorPanel() {
+export default function DirectorPanelPage() {
   const { code } = useParams<{ code: string }>();
   const navigate = useNavigate();
   const [room, setRoom] = useState<Room | null>(null);
@@ -131,7 +130,7 @@ export default function DirectorPanel() {
   // Bind video element to specific participant's camera track
   const attachVideoTrack = (participant: Participant, videoEl: HTMLVideoElement | null) => {
     if (!videoEl) return;
-    
+
     // Find first video track published by participant using trackPublications map
     const trackPub = Array.from(participant.trackPublications.values()).find(
       (t) => t.kind === Track.Kind.Video
@@ -254,7 +253,7 @@ export default function DirectorPanel() {
 
   return (
     <div className="flex-1 flex flex-col bg-bg-darkest select-none h-screen text-zinc-100 overflow-hidden">
-      
+
       {/* Studio Header Row */}
       <header className="bg-bg-darker border-b border-zinc-900 px-6 py-3.5 flex justify-between items-center z-30 shrink-0">
         <div className="flex items-center gap-3">
@@ -297,10 +296,10 @@ export default function DirectorPanel() {
 
       {/* Main Grid View */}
       <div className="flex-1 flex overflow-hidden">
-        
+
         {/* Left Side: Program Screen & Feeds Grid */}
         <div className="flex-1 flex flex-col p-4 space-y-4 overflow-y-auto">
-          
+
           {/* Active Live Program preview screen */}
           <div className="relative aspect-video max-h-[50vh] bg-black rounded-xl overflow-hidden border border-zinc-900 shadow-2xl flex items-center justify-center group">
             <video
@@ -328,7 +327,7 @@ export default function DirectorPanel() {
             <h3 className="text-[10px] font-black tracking-widest text-zinc-500 uppercase flex items-center gap-1.5">
               <Video className="w-3.5 h-3.5" /> Camera Feeds
             </h3>
-            
+
             {cameras.length > 0 ? (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {cameras.map((cam) => {
@@ -345,14 +344,13 @@ export default function DirectorPanel() {
                   };
 
                   return (
-                    <div 
-                      key={cam.identity} 
+                    <div
+                      key={cam.identity}
                       onClick={() => triggerCameraSwitch(cam.identity)}
-                      className={`relative aspect-video bg-zinc-950 rounded-xl overflow-hidden cursor-pointer transition-all duration-300 group border-2 ${
-                        isActive 
-                          ? 'border-red-600 shadow-lg shadow-red-950/20' 
+                      className={`relative aspect-video bg-zinc-950 rounded-xl overflow-hidden cursor-pointer transition-all duration-300 group border-2 ${isActive
+                          ? 'border-red-600 shadow-lg shadow-red-950/20'
                           : 'border-zinc-900 hover:border-zinc-700'
-                      }`}
+                        }`}
                     >
                       <video
                         ref={(el) => {
@@ -367,15 +365,14 @@ export default function DirectorPanel() {
 
                       {/* Video source Label & Indicators overlay */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40 p-2.5 flex flex-col justify-between pointer-events-none">
-                        
+
                         {/* Top: Telemetry Icons */}
                         <div className="flex justify-between items-center">
-                          <span className={`px-2 py-0.5 rounded text-[8px] font-black tracking-wider uppercase ${
-                            isActive ? 'bg-red-600 text-white' : 'bg-zinc-800/80 text-zinc-300'
-                          }`}>
+                          <span className={`px-2 py-0.5 rounded text-[8px] font-black tracking-wider uppercase ${isActive ? 'bg-red-600 text-white' : 'bg-zinc-800/80 text-zinc-300'
+                            }`}>
                             {isActive ? 'LIVE' : 'PREVIEW'}
                           </span>
-                          
+
                           {/* Battery and signal icons */}
                           <div className="flex gap-2 text-white/90">
                             <div className="flex items-center gap-0.5 text-[8px] bg-black/60 px-1 py-0.5 rounded">
@@ -434,14 +431,13 @@ export default function DirectorPanel() {
                 };
 
                 return (
-                  <div 
+                  <div
                     key={mic.identity}
                     onClick={() => triggerAudioSwitch(mic.identity)}
-                    className={`p-4 rounded-xl border cursor-pointer transition-all duration-300 space-y-3 ${
-                      isActive 
-                        ? 'bg-amber-950/20 border-amber-500/80' 
+                    className={`p-4 rounded-xl border cursor-pointer transition-all duration-300 space-y-3 ${isActive
+                        ? 'bg-amber-950/20 border-amber-500/80'
                         : 'bg-bg-darkest border-zinc-800 hover:border-zinc-700'
-                    }`}
+                      }`}
                   >
                     <div className="flex justify-between items-center">
                       <div className="flex items-center gap-2">
@@ -450,9 +446,8 @@ export default function DirectorPanel() {
                         </div>
                         <span className="text-xs font-bold text-white truncate max-w-[120px]">{telemetry.name}</span>
                       </div>
-                      <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider ${
-                        isActive ? 'bg-amber-500 text-bg-darkest' : 'bg-zinc-800 text-zinc-500'
-                      }`}>
+                      <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider ${isActive ? 'bg-amber-500 text-bg-darkest' : 'bg-zinc-800 text-zinc-500'
+                        }`}>
                         {isActive ? 'ON AIR' : 'MUTED'}
                       </span>
                     </div>
@@ -460,11 +455,10 @@ export default function DirectorPanel() {
                     {/* Volume level progress VU slider bar */}
                     <div className="space-y-1.5">
                       <div className="h-2 w-full bg-zinc-900 rounded overflow-hidden flex relative border border-zinc-850">
-                        <div 
+                        <div
                           style={{ width: `${telemetry.isMuted ? 0 : (telemetry.audioLevel || 0)}%` }}
-                          className={`h-full transition-all duration-75 ${
-                            isActive ? 'bg-gradient-to-r from-emerald-500 via-amber-500 to-red-500' : 'bg-zinc-700'
-                          }`}
+                          className={`h-full transition-all duration-75 ${isActive ? 'bg-gradient-to-r from-emerald-500 via-amber-500 to-red-500' : 'bg-zinc-700'
+                            }`}
                         />
                       </div>
                       <div className="flex justify-between text-[8px] font-mono text-zinc-650">
